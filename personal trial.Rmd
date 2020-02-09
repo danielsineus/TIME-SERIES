@@ -1,0 +1,51 @@
+---
+title: "TIME SERIES TUTORIAL"
+author: "Daniel SINEUS"
+date: "January 11, 2020"
+output: word_document
+---
+
+```{r setup, include=FALSE, echo=TRUE}
+library(xts)
+library(zoo)
+library(lubridate)
+library(dplyr)
+
+dat<-read.csv("sales.csv", header = TRUE, stringsAsFactors = F)
+head(dat)
+dat1<-read.csv("stores.csv", header = TRUE, stringsAsFactors = F)
+head(dat1)
+dat2<-read.csv("products.csv", header = TRUE, stringsAsFactors = F)
+head(dat2)
+dat3<-read.csv("counties.csv", header = TRUE, stringsAsFactors = F)
+head(dat3)
+datsale<-dat[,c("date","total")]
+str(datsale$date)
+datsale$date = as.Date(strptime(datsale$date, "%Y-%m-%d %H:%M:%S"))
+class(datsale)
+str(datsale)
+head(datsale)
+# convert character data into time data
+df_ts <- xts(x = datsale, order.by = datsale$date)
+df_ts%>%
+  na.omit()
+class(df_ts)
+plot.xts(df_ts$total)
+library(ggplot2)
+ggplot(df_ts, aes(x=date, y=total), frequency=12)
+ 
+library(plotly)
+library(hrbrthemes)
+p <- df_ts %>%
+  ggplot( aes(x=date, y=total)) +
+    geom_area(fill="#69b3a2", alpha=0.5) +
+    geom_line(color="#69b3a2") +
+    ylab("bitcoin price ($)") 
+
+# Turn it interactive with ggplotly
+p <- ggplotly(p)
+p
+
+#
+```
+
