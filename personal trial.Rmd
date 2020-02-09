@@ -18,13 +18,27 @@ head(dat1)
 dat2<-read.csv("products.csv", header = TRUE, stringsAsFactors = F)
 head(dat2)
 dat3<-read.csv("counties.csv", header = TRUE, stringsAsFactors = F)
-head(dat3)
+head(dat3,3)
 datsale<-dat[,c("date","total")]
-str(datsale$date)
+str(datsale)
 datsale$date = as.Date(strptime(datsale$date, "%Y-%m-%d %H:%M:%S"))
 class(datsale)
 str(datsale)
-head(datsale)
+
+library(forecast)
+sales_ts<-ts(datsale$total, start = c(2014,1), end = c(2024,12), freq=4)
+
+class(sales_ts)
+
+head(sales_ts)
+plot(sales_ts, bty="l")
+
+#Subset the time series
+myts2<-window(sales_ts, start=c(2018,1), end=c(2024,1))
+plot(myts2)
+#additional plots
+monthplot(sales_ts)
+
 # convert character data into time data
 df_ts <- xts(x = datsale, order.by = datsale$date)
 df_ts%>%
@@ -32,7 +46,7 @@ df_ts%>%
 class(df_ts)
 plot.xts(df_ts$total)
 library(ggplot2)
-ggplot(df_ts, aes(x=date, y=total), frequency=12)
+ggplot(df_ts, aes(x=date, y=total), frequency=4)
  
 library(plotly)
 library(hrbrthemes)
@@ -46,6 +60,5 @@ p <- df_ts %>%
 p <- ggplotly(p)
 p
 
-#
 ```
 
