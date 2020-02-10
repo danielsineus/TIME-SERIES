@@ -26,12 +26,12 @@ class(datsale)
 str(datsale)
 
 library(forecast)
-sales_ts<-ts(datsale$total, start = c(2014,1), end = c(2024,12), freq=4)
+sales_ts<-ts(datsale$total, start = c(2014,1), end = c(2024,12), freq=12)
 
 class(sales_ts)
 
 head(sales_ts)
-plot(sales_ts, bty="l")
+plot(sales_ts,xlab="time", ylab="sales", bty="l")
 
 #Subset the time series
 myts2<-window(sales_ts, start=c(2018,1), end=c(2024,1))
@@ -39,26 +39,50 @@ plot(myts2)
 #additional plots
 monthplot(sales_ts)
 
-# convert character data into time data
-df_ts <- xts(x = datsale, order.by = datsale$date)
-df_ts%>%
-  na.omit()
-class(df_ts)
-plot.xts(df_ts$total)
-library(ggplot2)
-ggplot(df_ts, aes(x=date, y=total), frequency=4)
- 
-library(plotly)
-library(hrbrthemes)
-p <- df_ts %>%
-  ggplot( aes(x=date, y=total)) +
-    geom_area(fill="#69b3a2", alpha=0.5) +
-    geom_line(color="#69b3a2") +
-    ylab("bitcoin price ($)") 
+# convert the ts format data into xs data
+sales_xts<-as.xts(sales_ts)
+class(sales_xts) 
+# Export xts from R
+write.zoo(sales_xts, "Sales1")
+saveRDS(sales_xts, "sales2")
 
-# Turn it interactive with ggplotly
-p <- ggplotly(p)
-p
+#Determining the periodicity
+periodicity(sales_xts)
+period_year<-to.yearly(sales_xts)
+periodicity(period_year)
+head(period_year)
+#count the months
+nmonths(sales_xts)
+nyears(sales_xts)
+nquarters(sales_xts)
+
+nquarters(period_year)
+nyears(period_year)
+nmonths(period_year)
+ndays(sales_xts)
+# linear regression models for time series
+sales.lm<-tslm(sales_ts~trend+I(trend^2))
+head(sales.lm)
+par(mfrow=c(2,1))
+plot(sales_ts, xlab="time", ylab="sales", bty="l")
+lines(sales.lm$coefficients, lwd=2)
+sales.ts.zoom<-window(sales_ts, start=c(2014,1), end=c(2024,12))
+plot(sales.ts.zoom, xlab="time", ylab="sales",bty="l")
+
+
+#joining partition
+nvalid<-36
+nsales<-length(sales_ts)-nvalid
+head(nsales)
+length(sales_ts)
+
+train.ts<-window(sales_ts, start = c(2014, 1), end = c(2014,nsales))
+valid.ts<-window(sales_ts, start=c(2014, nsales+1), end=c(2014, nsales+nvalid))
+length(train.ts)
+length(valid.ts)
+sales.lm1<-tslm(train.ts~trend + I(trend^2))
+sales.lm.pred<-forecast(sales.lm, h=nvalid, level = 0)
+plot(sales.lm.pred, ylab = "sales", xlab = "time", bty="l")
 
 ```
 
