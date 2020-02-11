@@ -19,7 +19,7 @@ dat2<-read.csv("products.csv", header = TRUE, stringsAsFactors = F)
 head(dat2)
 dat3<-read.csv("counties.csv", header = TRUE, stringsAsFactors = F)
 head(dat3,3)
-datsale<-dat[,c("date","total")]
+datsale<-dat[,c("date","bottle_qty", "total")]
 str(datsale)
 datsale$date = as.Date(strptime(datsale$date, "%Y-%m-%d %H:%M:%S"))
 class(datsale)
@@ -27,7 +27,8 @@ str(datsale)
 
 library(forecast)
 sales_ts<-ts(datsale$total, start = c(2014,1), end = c(2024,12), freq=12)
-
+sales_ts1<-ts(datsale, start = c(2014,1), end = c(2024,12), freq=12)
+sales_ts2<-sales_ts1[,2:3]
 class(sales_ts)
 
 head(sales_ts)
@@ -62,10 +63,9 @@ nmonths(period_year)
 ndays(sales_xts)
 # linear regression models for time series
 sales.lm<-tslm(sales_ts~trend+I(trend^2))
-head(sales.lm)
 par(mfrow=c(2,1))
 plot(sales_ts, xlab="time", ylab="sales", bty="l")
-lines(sales.lm$coefficients, lwd=2)
+lines(sales.lm$fitted, lwd=2)
 sales.ts.zoom<-window(sales_ts, start=c(2014,1), end=c(2024,12))
 plot(sales.ts.zoom, xlab="time", ylab="sales",bty="l")
 
@@ -81,8 +81,12 @@ valid.ts<-window(sales_ts, start=c(2014, nsales+1), end=c(2014, nsales+nvalid))
 length(train.ts)
 length(valid.ts)
 sales.lm1<-tslm(train.ts~trend + I(trend^2))
-sales.lm.pred<-forecast(sales.lm, h=nvalid, level = 0)
-plot(sales.lm.pred, ylab = "sales", xlab = "time", bty="l")
+sales.lm.pred<-forecast(sales.lm1, h=nvalid, level = 0)
+plot(sales.lm.pred, ylab = "sales",ylim=c(1,1500), xlab = "time", bty="l",
+     xaxt="n", xlim=c(2014, 2027), main = "", flty = 2)
+axis(1, at=seq(2014, 2024,1), labels = format(seq(2014,2026,1)))
+lines(sales.lm1$fitted.values, lwd=2)
+lines(valid.ts)
 
 ```
 
