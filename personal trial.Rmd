@@ -88,5 +88,20 @@ axis(1, at=seq(2014, 2024,1), labels = format(seq(2014,2026,1)))
 lines(sales.lm1$fitted.values, lwd=2)
 lines(valid.ts)
 
+
+train.ts<-window(sales_ts, start = c(2014, 1), end = c(2014,nsales))
+valid.ts<-window(sales_ts, start=c(2014, nsales+1), end=c(2014, nsales+nvalid))
+
+sales.lm2w<-tslm(train.ts~poly(trend,2))
+sales.lm.pre<-forecast(sales.lm2w, h=nvalid, level = 0)
+
+plot(sales.lm.pre, ylim = c(20, 2500), ylab = "Sales", xlab = "time", bty="l", xaxt="n", xlim=c(2014, 2026), main = "Forecasting", flty = 2)
+axis(1, at=seq(2014, 2026, 1), labels = format(seq(2014, 2026, 1)))
+lines(sales.lm2w$fitted, lwd=2)
+lines(valid.ts)
+
+#Smoothing Method
+meanf(sales_ts, h=12)
+snaive(sales_ts, h=25)
 ```
 
