@@ -13,6 +13,7 @@ library(dplyr)
 
 dat<-read.csv("sales.csv", header = TRUE, stringsAsFactors = F)
 head(dat)
+dim(dat)
 dat1<-read.csv("stores.csv", header = TRUE, stringsAsFactors = F)
 head(dat1)
 dat2<-read.csv("products.csv", header = TRUE, stringsAsFactors = F)
@@ -24,26 +25,51 @@ str(datsale)
 datsale$date = as.Date(strptime(datsale$date, "%Y-%m-%d %H:%M:%S"))
 class(datsale)
 str(datsale)
-
+ad<-head(datsale, 20)
+salesaggregate<-datsale%>%
+  group_by(date)%>%
+  summarise(sales=sum(total))
+dim(salesaggregate)
+a<-head(salesaggregate)
+b<-tail(salesaggregate)
+b
 library(forecast)
-sales_ts<-ts(datsale$total, start = c(2014,1), end = c(2024,12), freq=12)
-sales_ts1<-ts(datsale, start = c(2014,1), end = c(2024,12), freq=12)
-sales_ts2<-sales_ts1[,2:3]
+sales_ts<-ts(salesaggregate$sales, start=c(2014,1),frequency=365.25)
 class(sales_ts)
+start(sales_ts)
+end(sales_ts)
+frequency(sales_ts)
+length(sales_ts)
+start
 
-head(sales_ts)
+sales_ts1<-ts(na.omit(datsale$total, start=c(2014,1), end=c(2024,12), freq=365.25))
+plot(sales_ts1)
+length(sales_ts1)
+class(sales_ts)
+class(sales_ts1)
+head(sales_ts, 10)
+
+sales_xts1<-as.xts(sales_ts1)
+
+year<-to.yearly(sales_xts1)
+length(year)
+plot(year)
+#Plot the TIME SERIES
 plot(sales_ts,xlab="time", ylab="sales", bty="l")
 
+plot(sales_xts1, xlab="time", ylab="sales",xlim=c(2014, 2026), bty="l")
 #Subset the time series
-myts2<-window(sales_ts, start=c(2018,1), end=c(2024,1))
+myts2<-window(sales_ts, start=c(2018,1), end=c(2024,1), frequency=12)
+#plot the subset time series
 plot(myts2)
 #additional plots
 monthplot(sales_ts)
+autoplot(myts2)
 
 # convert the ts format data into xs data
 sales_xts<-as.xts(sales_ts)
 class(sales_xts) 
-# Export xts from R
+# Export xts from R so that it can be reused
 write.zoo(sales_xts, "Sales1")
 saveRDS(sales_xts, "sales2")
 
@@ -61,6 +87,7 @@ nquarters(period_year)
 nyears(period_year)
 nmonths(period_year)
 ndays(sales_xts)
+
 # linear regression models for time series
 sales.lm<-tslm(sales_ts~trend+I(trend^2))
 par(mfrow=c(2,1))
