@@ -1,5 +1,5 @@
 # TIME Series Forecasting
-In this tutorial, the goal is to provide the steps and foundation for a good forecasting. Many steps will be considered. Analyses from various levels will be presented. The presentation will be succint and only the major points will be outlined. some of the steps and comments are also outlined in the 
+In this tutorial, the goal is to provide the steps and foundation for a good forecasting. Many steps will be considered. Analyses from various levels will be presented. The presentation will be succint and only the major points will be outlined. some of the steps and comments are also outlined in the R format.
 
 
 ## Convert the Data in time Series (ts)
