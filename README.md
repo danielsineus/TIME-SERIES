@@ -11,3 +11,5 @@ Window function can help subset the data from one period to a another period by 
 
 ## Difficulties and challenges
 Diffculties encountered will be discussed in order to help find a way to go around them. Most of the difficulties come from tidying the data and make it conducive to conducting the forecasting. 
+#### Handling dates 
+the date was in a character format. It has to converted into a date format
