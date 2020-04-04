@@ -6,19 +6,22 @@ library(timeSeries)
 library(lubridate)
 library(ggplot2)
 library(tidyverse)
+# read the CVS data
 data<-read.csv("Salesrecord.csv", header = TRUE, stringsAsFactors = F)
 str(data)
+#Select the date and revenue columns 
 data1<-data[,c(6,12)]
 str(data1)
+#Convert the character-format date into date format
 data1$Order.Date<-as.Date(data1$Order.Date, "%m/%d/%Y")
 data1$Order.Date<-sort(data1$Order.Date)
 
 str(data1)
 head(data1)
 tail(data1)
-c<-data1%>%
-  mutate(year=as.Date(yeardata1$Order.Date))
 
+#Convert the data by aggregating by days
+# get the revenue expressed in 10000 unit of dollar
 data2<-data1%>%
   group_by(Order.Date)%>%
   summarise(revenu=sum(Total.Revenue)/10000)%>%
@@ -30,20 +33,13 @@ head(data2)
 tail(data2)
 
 
-dat1<-dat%>%
-  group_by(year)%>%
-  summarise(revenue=sum(revenue))%>%
-  na.omit()%>%
-  as.data.frame()
-
-
-
 #Save a dataframe in R as csv
 write.csv(data2,"datse.csv")
 dat<-read.csv("datse.csv")
 dat$date<-as.character(dat$date)
 class(dat)
 str(dat)
+
 tat<-xts(dat, order.by = as.Date(dat$date,"%Y-%m-%d"))
 class(tat)
 str(tat)
@@ -52,7 +48,7 @@ View(tat)
 
 # convert to a month period
 tat_monhly<-to.period(tat, period = "months", OHLC = FALSE)
-head(tat_monhly)
+head(tat_monhly, 40)
 class(tat_monhly)
 periodicity(tat_monhly)
 
@@ -66,11 +62,14 @@ plot(rast)
 
 tat_year<-tat["2010/2017"]
 ep<-endpoints(tat_year, "months")
-peded<-period.apply(tat_year, INDEX = ep, FUN = )
+peded<-period.apply(tat_year, INDEX = ep, FUN =mean)
 head(peded)
-peded_ts<-as.ts(peded, frequency=12)
-head(peded_ts)
+peded_ts<-ts(peded, start=c(2010,1), end=c(2017,7), frequency=12)
+class(peded_ts)
+head(peded_ts, 100)
 plot(peded_ts)
+
+autoplot(peded_ts)
 
 head(sat_monthly)
 help("period.apply")
