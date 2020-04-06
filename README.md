@@ -17,10 +17,14 @@ the date was in a character format. It has be to converted into a date format.
 Honestly i was not able to use the cumsum() when i had to use the endpoint. Cumsum() doesn't really work with inserting it in the function lapply(), mean ()
 
 **Split temps by week**
+
 temps_weekly <- split(__, f = "___")
 
 **Create a list of weekly means, temps_avg, and print this list**
+
 temps_avg <- lapply(X = ___, FUN = ___)
+
+**The method**
 
 x_split <- split(x, f = "months")
 
