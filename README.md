@@ -17,7 +17,7 @@ Diffculties encountered will be discussed in order to help find a way to go arou
 
 the date was in a character format. It has be to converted into a date format.
 
-### Changing the periodicity
+#### Changing the periodicity
 
 Honestly i was not able to use the cumsum() when i had to use the endpoint. Cumsum() doesn't really work with inserting it in the function lapply(), mean ()
 
