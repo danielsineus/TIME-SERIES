@@ -20,7 +20,7 @@ Honestly i was not able to use the cumsum() when i had to use the endpoint. Cums
 
 temps_weekly <- split(__, f = "___")
 
-**Create a list of weekly means, temps_avg, and print this list**
+***Create a list of weekly means, temps_avg, and print this list***
 
 temps_avg <- lapply(X = ___, FUN = ___)
 
