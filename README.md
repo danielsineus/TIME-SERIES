@@ -10,13 +10,18 @@ The periodicity is important after transforming the data in ts data, periodicity
 Window function can help subset the data from one period to a another period by determining the frequency. If the data is too large, to forecast it is sometime important to reduce the length of the data to more practical length of time.
 
 ## Difficulties and challenges
+
 Diffculties encountered will be discussed in order to help find a way to go around them. Most of the difficulties come from tidying the data and make it conducive to conducting the forecasting. 
+
 #### Handling dates 
+
 the date was in a character format. It has be to converted into a date format.
+
 ### Changing the periodicity
+
 Honestly i was not able to use the cumsum() when i had to use the endpoint. Cumsum() doesn't really work with inserting it in the function lapply(), mean ()
 
-**Split temps by week**
+***Split temps by week***
 
 temps_weekly <- split(__, f = "___")
 
@@ -24,7 +29,7 @@ temps_weekly <- split(__, f = "___")
 
 temps_avg <- lapply(X = ___, FUN = ___)
 
-*The method used instead*
+***The method used instead***
 
 x_split <- split(x, f = "months")
 
