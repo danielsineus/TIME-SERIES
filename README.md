@@ -24,8 +24,10 @@ temps_weekly <- split(__, f = "___")
 
 temps_avg <- lapply(X = ___, FUN = ___)
 
-**The method**
+*The method used instead*
 
 x_split <- split(x, f = "months")
+
 x_list <- lapply(x_split, cummax)
+
 x_list_rbind <- do.call(rbind, x_list)
