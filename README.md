@@ -14,12 +14,16 @@ Diffculties encountered will be discussed in order to help find a way to go arou
 #### Handling dates 
 the date was in a character format. It has be to converted into a date format.
 ### Changing the periodicity
-Honestly i was not able to use the cumsum() when i had to use the endpoint. Cumsum() doesn't really work with inserting it in the function lapply(), mean 
+Honestly i was not able to use the cumsum() when i had to use the endpoint. Cumsum() doesn't really work with inserting it in the function lapply(), mean ()
+
 **Split temps by week**
 temps_weekly <- split(__, f = "___")
+
 **Create a list of weekly means, temps_avg, and print this list**
 temps_avg <- lapply(X = ___, FUN = ___)
 
 x_split <- split(x, f = "months")
+
 x_list <- lapply(x_split, cummax)
+
 x_list_rbind <- do.call(rbind, x_list)
