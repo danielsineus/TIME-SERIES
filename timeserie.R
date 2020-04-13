@@ -154,6 +154,39 @@ library(zoo)
 ma.trailing<-rollmean(peded_ts, k=12, align = "right")
 ma.centered<-ma(peded_ts, order = 12)
 plot(peded_ts, bty="l", xaxt="n")
-axis(1, at=seq(2015, 2019,1), labels = format(seq(2015,2019,1)))
+axis(1, at=seq(2010, 2019,1), labels = format(seq(2010,2019,1)))
 lines(ma.centered, lwd=2)
 lines(ma.trailing, lwd=2, lty=2)
+legend(c("sales", "Centered Moving average", "Trailling moving Average"),lty = c(1,1,2), lwd = c(1,2,2), bty="n")
+
+
+last.ma<-tail(ma.trailing,1)
+ma.trailing.pred<-ts(rep(last.ma, nvalid), start = c(2010, nvalid+1), end = c(2010, nvalid+ndata), frequency = 12)
+plot(train.ts)
+axis(1, at=seq(2010, 2019,1), labels = format(seq(2010, 2019,1)))
+lines(ma.trailing,lwd=2, col="bleu")
+lines(ma.trailing.pred, lwd=2, col="blue", lty=2)
+lines(valid.ts)
+ # COMPUTE NAIVE AND SEASONAL NAIVE FORECAST
+fixed.valid<-36
+fixed.nvalid<-length(peded_ts)-fixed.valid
+train.ts1<-window(peded_ts, start=c(2010, 1), end=c(2010,fixed.nvalid))
+valid.ts1<-window(peded_ts, start=c(2010, fixed.nvalid+1), end=c(2010, fixed.nvalid+fixed.valid))
+naive.pred<-naive(train.ts1, h=fixed.nvalid)
+snaive.pred<-snaive(train.ts, h=fixed.nvalid)
+accuracy(naive.pred, valid.ts)
+accuracy(snaive.pred, valid.ts)
+
+
+#Exponential smoothing 
+diff.twice.ts<-diff(diff(peded_ts, lag=12), lag=1)
+nvalid<-36
+length(diff.twice.ts)
+ntrain<-length(diff.twice.ts)-nvalid
+diff<-window(diff.twice.ts, start=c(2010, 1), end=c(2010, ntrain+1))
+diff.ts<-window(diff.twice.ts, start=c(2010, ntrain+1), end=c(2010, ntrain+nvalid+1))
+ses<-ets(diff, model = "ANN", alpha = 0.2)
+ses.pred<-forecast(ses, h=nvalid, level = 0)
+ses.pred
+plot(ses.pred)
+
